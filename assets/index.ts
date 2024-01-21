@@ -1,14 +1,14 @@
-const p1 = '/princess/p1.svg' 
-const p2 = '/princess/p2.svg'
-const p3 = '/princess/p3.svg'
-const p4 = '/princess/p4.svg'
-const p5 = '/princess/p5.svg'
-const p6 = '/princess/p6.svg'
-const p7 = '/princess/p7.svg'
-const p8 = '/princess/p8.svg'
-const p9 = '/princess/p9.svg'
+export const princess1 =  require('./princess/p1.svg');
+export const princess2 =  require('./princess/p2.svg');
+export const princess3 =  require('./princess/p3.svg');
+export const princess4 =  require('./princess/p4.svg');
+export const princess5 =  require('./princess/p5.svg');
+export const princess6 =  require('./princess/p6.svg');
+export const princess7 =  require('./princess/p7.svg');
+export const princess8 =  require('./princess/p8.svg');
+export const princess9 =  require('./princess/p9.svg');
 
-export const princessesRoutes = [p1, p2, p3, p4, p5, p6, p7, p8, p9]
+export const princesses= [princess1, princess2, princess3, princess4, princess5, princess6, princess7, princess8, princess9]
 
 // import v1 from './villain/v1.svg'
 // import v2 from './villain/v2.svg'
