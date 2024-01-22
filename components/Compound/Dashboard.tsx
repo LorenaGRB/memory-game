@@ -1,4 +1,4 @@
-import { ImageSourcePropType, StyleSheet, Text, View } from 'react-native'
+import { Alert, ImageSourcePropType, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ImageButton from '../UI/ImageButton'
 import { Colors } from '../../constants/styles'
@@ -18,7 +18,9 @@ type Try = {
 const Dashboard = () => {
   const [optionsDisorder, setOptionsDisorder] = useState<ImageSourcePropType[]>([]);
   const [buttonInfo, setButtonInfo] = useState<ButtonInfo[]>([]);
-  const [attempt, setAttempt] = useState<Try>({isTrying: false, totalTries: 0});
+  const [attempt, setAttempt] = useState<Try>({ isTrying: false, totalTries: 0 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     const doublePrincesses = princesses.concat(princesses);
@@ -37,13 +39,18 @@ const Dashboard = () => {
   }, []);
 
   const handlePress = (index: number) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+
     const isCompleted = buttonInfo[index].status === COMPLETED;
     const isShowing = buttonInfo[index].status === SHOW;
-
-    if(isCompleted || isShowing) {
+    if (isCompleted || isShowing) {
       return;
     }
 
+    const isTheFirstTry = attempt.isTrying === false;
     setAttempt((prev) => {
       if (prev.isTrying) {
         return {
@@ -57,6 +64,7 @@ const Dashboard = () => {
         }
       }
     })
+
     setButtonInfo((prev) => {
       const newButtonInfo = [...prev];
       const currentButton = newButtonInfo[index];
@@ -66,11 +74,17 @@ const Dashboard = () => {
       if (myPairButton.status === SHOW) {
         currentButton.status = COMPLETED;
         myPairButton.status = COMPLETED;
+        setIsCompleted(true);
       } else {
         currentButton.status = SHOW;
       }
       return newButtonInfo;
     })
+
+    if (isTheFirstTry) {
+      setIsLoading(false);
+      return;
+    }
 
     setTimeout(() => {
       setButtonInfo((prev) => {
@@ -78,15 +92,17 @@ const Dashboard = () => {
         const myPairKey = newButtonInfo[index].myPairKey;
         const myPairButton = newButtonInfo[myPairKey];
 
-        if(attempt.isTrying && myPairButton.status !== SHOW) {
+        if (attempt.isTrying && myPairButton.status !== SHOW) {
           const allShow = newButtonInfo.filter((button) => button.status === SHOW);
           allShow.forEach((button) => {
             button.status = HIDE;
           })
         }
+        setIsLoading(false);
         return newButtonInfo;
       })
-    } , 1000)
+    }, 800)
+
   }
   return (
     <View style={styles.container}>
@@ -97,8 +113,8 @@ const Dashboard = () => {
           </View>
         )
       }
-      <View style={{width: '100%', alignItems: 'center'}}>
-        <Text style={{color: Colors.white, fontSize: 20}}>Total de intentos: {attempt.totalTries}</Text>
+      <View style={{ width: '100%', alignItems: 'center' }}>
+        <Text style={{ color: Colors.white, fontSize: 20 }}>Total de intentos: {attempt.totalTries}</Text>
       </View>
     </View>
   )
